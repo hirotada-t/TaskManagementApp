@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR fFf" class="bg-orange-4">
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
@@ -11,14 +11,14 @@
     </q-header>
 
     <q-drawer v-model="right" side="right" overlay behavior="mobile" elevated>
-      <div class="column">
+      <div class="column" style="height: 100%;">
         <q-list>
           <q-item-label header class="text-grey-8">
             Essential Links
           </q-item-label>
           <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
         </q-list>
-        <div class="q-mt-sm text-center" style="margin-top: auto;">
+        <div class="q-mb-lg text-center" style="margin-top: auto;">
           <q-btn flat class="bg-grey-5" icon="close" label="close" @click="right = !right" />
         </div>
       </div>
@@ -29,10 +29,10 @@
     </q-page-container>
 
 
-    <q-footer elevated class="bg-primary text-white mobile-only">
+    <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
       <q-tabs align="center">
         <q-tab dense flat round icon="close" />
-        <q-tab dense flat round icon="dotted" />
+        <q-tab dense flat round :icon="scaleIcon" @click="scaleCardArea"/>
         <q-tab dense flat round icon="menu" @click="right = !right" />
       </q-tabs>
     </q-footer>
@@ -96,7 +96,18 @@
     data() {
       return {
         right: false,
-        essentialLinks: linksData
+        essentialLinks: linksData,
+        scaleIcon:"zoom_out"
+      }
+    },
+    methods: {
+      scaleCardArea(){
+        const content = document.querySelector(".content");
+        if(content.classList.contains("scale-on")){
+          content.classList.remove("scale-on")
+        } else {
+          content.classList.add("scale-on")
+        }
       }
     }
   }
