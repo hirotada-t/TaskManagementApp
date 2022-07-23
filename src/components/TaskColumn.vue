@@ -2,10 +2,12 @@
   <div class="q-pa-sm w-300px">
     <q-card class="my-card bg-blue-grey-1">
       <q-card-section>
-        <div class="text-h6">{{sectionTitle}}</div>
+        <div class="text-h6">{{getSection.sectionName}}</div>
       </q-card-section>
       <q-card-section class="h-full q-py-none">
-        <TaskItem v-for="n of getCardsNum" :key="n"></TaskItem>
+        <div v-for="card of getSection.cardList" :key="card.cardPosNum">
+          <TaskItem :card="card"></TaskItem>
+        </div>
       </q-card-section>
       <q-btn flat class="full-width q-py-sm bg-dark text-white" label="＋ add card" @click="addCard" />
 
@@ -18,22 +20,39 @@
 
   export default {
     name: 'TaskColumn',
+
     props: {
-      cards: { type: String }
+      section: { type: Object }
     },
+
     components: {
       TaskItem,
     },
+
     data() {
       return {
-        sectionTitle: "section",
-        getCardsNum: Number(this.cards),
+        getSection: this.section,
       }
     },
+
     methods: {
       addCard() {
-        alert("card")
+        this.getSection.cardList.push({
+          "cardName": "newCard",
+          "cardPosNum": this.getSection.cardList.length + 1,
+          "cardContent": "content",
+          "createDate": "2022-07-22",
+          "deadLine": "",
+          "checkList": {},
+          "cardTags": [],
+          "archives": false,
+          "cardComment": "comment",
+          "cardStar": false
+        })
       }
+    },
+
+    computed: {
     }
   }
 </script>
@@ -67,5 +86,4 @@
     border-radius: 100px;
     background-color: #55555580;
   }
-
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-orange-4">
+  <q-layout view="hHh lpR fFf">
 
-    <q-header elevated class="bg-primary text-white">
+    <q-header elevated class="bg-header text-white">
       <q-toolbar>
         <q-toolbar-title>
           Task Management App
@@ -97,18 +97,26 @@
       return {
         right: false,
         essentialLinks: linksData,
-        scaleIcon:"zoom_out"
+        scaleIcon:"zoom_in"
       }
     },
     methods: {
       scaleCardArea(){
         const content = document.querySelector(".content");
-        if(content.classList.contains("scale-on")){
-          content.classList.remove("scale-on")
+        if(content.classList.contains("zoom-out")){
+          content.classList.remove("zoom-out");
+          this.scaleIcon = "zoom_in";
         } else {
-          content.classList.add("scale-on")
+          content.classList.add("zoom-out");
+          this.scaleIcon = "zoom_out";
         }
       }
     }
   }
 </script>
+
+<style>
+  .bg-header {
+    background-color: #00000099;
+  }
+</style>
