@@ -37,11 +37,12 @@
 
     methods: {
       addCard() {
+        const date = new Date();
         this.getSection.cardList.push({
           "cardName": "newCard",
           "cardPosNum": this.getSection.cardList.length + 1,
           "cardContent": "content",
-          "createDate": "2022-07-22",
+          "createDate": date.toLocaleString(),
           "deadLine": "",
           "checkList": {},
           "cardTags": [],
