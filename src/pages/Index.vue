@@ -28,13 +28,10 @@
   import { ref } from 'vue';
 
   export default {
-    setup() {
-      return {
-        startConfig: ref(false),
-      }
-    },
+
     data() {
       return {
+        startConfig: false,
       }
     },
     methods: {
@@ -45,10 +42,6 @@
       async fileHandle() {
         const file = this.$refs.input.files[0];
         if (!file) {
-          this.$router.push({
-            name: "TaskPage",
-            params: { taskList: [] }
-          });
           return;
         }
         let reader = new FileReader();

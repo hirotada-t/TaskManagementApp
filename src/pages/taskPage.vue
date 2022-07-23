@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <button @click="saveData()">save</button>
+      <q-btn flat class="full-width bg-dark text-white" label="save" @click="saveData" />
     </div>
   </q-page>
 </template>
@@ -35,9 +35,8 @@
 
     data() {
       return {
-        getTaskList: this.taskList,
+        getTaskList: this.taskList ? this.taskList : [],
         scrollBooster: null,
-        dataString:"",
       }
     },
 
@@ -63,12 +62,31 @@
           this.scrollBooster.updateMetrics();
         });
       },
-      saveData() {
-        alert(111)
+      async saveData() {
+        const date = new Date();
+        const options = {
+          suggestedName: date.toLocaleString(),
+          types: [{
+            description: 'JSON file',
+            accept: { 'application/json': ['.json'] },
+          }],
+        };
+        const handle = await window.showSaveFilePicker(options);
+        const writable = await handle.createWritable();
+        await writable.write(JSON.stringify(this.getTaskList));
+        await writable.close();
+      },
+      confirmSave(event) {
+        event.returnValue = "";
       },
     },
 
-    computed: {
+    created() {
+      window.addEventListener("beforeunload", this.confirmSave);
+    },
+
+    destroyed() {
+      window.removeEventListener("beforeunload", this.confirmSave);
     },
 
     mounted() {
@@ -76,7 +94,16 @@
       let viewport = document.querySelector(".viewport");
       let content = document.querySelector(".content");
       this.scrollBooster = this.setScrollBooster(viewport, content);
-    }
+    },
+
+    beforeRouteLeave(to, from, next) {
+      const answer = window.confirm("保存していないデータは失われます。よろしいですか？")
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
+    },
   }
 </script>
 
