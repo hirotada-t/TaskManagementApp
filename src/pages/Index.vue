@@ -1,96 +1,62 @@
 <template>
   <q-page>
-    <div class="q-py-md task-container">
-      <transition name="scale">
-        <div class="viewport">
-          <div class="row no-wrap q-gutter-none content scale-on">
-            <TaskColumn cards="2"></TaskColumn>
-            <TaskColumn cards="15"></TaskColumn>
-            <TaskColumn cards="1"></TaskColumn>
-            <TaskColumn cards="1"></TaskColumn>
-            <TaskColumn cards="4"></TaskColumn>
-            <TaskColumn cards="4"></TaskColumn>
-            <TaskColumn cards="4"></TaskColumn>
-            <div class="q-pa-sm w-300px">
-              <q-card class="my-card bg-blue-grey-1">
-                <q-btn flat class="full-width" label="＋ add sectiion" @click="addSection" />
-              </q-card>
-            </div>
-          </div>
-        </div>
-      </transition>
+    <div class="column" style="height: calc(100vh - 100px);">
+      <p class="text-center text-h3 q-mt-auto">Tap the image to get started.</p>
+      <div class="q-mt-md q-mb-auto text-center">
+        <img src="../img/lets-start.png" alt="" width="300" @click="startConfig = true">
+      </div>
     </div>
+    <q-dialog v-model="startConfig">
+      <q-card>
+        <q-card-section class="row justify-between q-pb-none">
+          <div class="text-h5">How do you start?</div>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <q-btn label="start anew" size="20px" icon="open_in_new" color="primary" href="/#/task"
+            class="q-mt-md full-width" />
+          <q-btn label="use past data" icon="file_upload" size="20px" color="primary" class="q-mt-md full-width"
+            @click="btnclick" />
+          <input type="file" class="hidden" ref="input" accept="application/json" @change="selectedFile()">
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
-  import TaskColumn from '../components/TaskColumn.vue'
-  import ScrollBooster from 'scrollbooster';
-
-  // Horizontal Image Slider
-  window.onload = function () {
-    new ScrollBooster({
-      viewport: document.querySelector(".viewport"),
-      content: document.querySelector(".content"),
-      direction: "horizontal",
-      scrollMode: "native",
-    });
-  }
+  import { ref } from 'vue';
 
   export default {
-    name: 'PageIndex',
-    components: {
-      TaskColumn,
-    },
-    methods: {
-      addSection() {
-        alert("section")
+    setup() {
+      return {
+        startConfig: ref(false),
       }
     },
+    data() {
+      return {
+      }
+    },
+    methods: {
+      btnclick() {
+        this.$refs.input.click();
+      },
+
+      async selectedFile() {
+        this.isUploading = true;
+        const file = this.$refs.input.files[0]
+        if (!file) {
+          return;
+        }
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = () => {
+          this.$router.push({
+            name: "taskPage",
+            params: { taskList: JSON.parse(reader.result) }
+          });
+        };
+      },
+    }
   }
 </script>
-
-<style lang="scss" scoped>
-  .task-container {
-    @media screen and (min-width:1024px) {
-      height: calc(100vh - 50px);
-    }
-
-    height: calc(100vh - 100px);
-  }
-
-  .w-300px {
-    min-width: 300px;
-  }
-
-  .viewport {
-    overflow-x: auto;
-    overflow-y: hidden;
-    height: 100%;
-    margin: auto;
-  }
-
-  .viewport::-webkit-scrollbar {
-    height: 10px;
-  }
-
-  .viewport::-webkit-scrollbar-track {
-    background-color: #55555570;
-    border-radius: 100px;
-    margin: 10px;
-  }
-
-  .viewport::-webkit-scrollbar-thumb {
-    border-radius: 100px;
-    background-color: #eee;
-  }
-
-  .content {
-    transition:.3s;
-  }
-
-  .scale-on {
-    transform-origin:left top;
-    transform: scale(0.5);
-  }
-</style>

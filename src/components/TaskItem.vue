@@ -1,7 +1,7 @@
 <template>
   <q-card class="my-card q-mb-md">
     <q-card-section>
-      {{taskTitle}}
+      {{getCards.cardName}}
     </q-card-section>
   </q-card>
 </template>
@@ -9,12 +9,14 @@
 <script>
   export default {
     name: 'TaskItem',
+
     props: {
-      msg: String
+      card: Object
     },
+    
     data() {
       return {
-        taskTitle: "title"
+        getCards: this.card
       }
     }
   }
