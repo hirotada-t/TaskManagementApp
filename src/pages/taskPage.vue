@@ -13,6 +13,7 @@
           </div>
         </div>
       </div>
+      <button @click="saveData()">save</button>
     </div>
   </q-page>
 </template>
@@ -36,6 +37,7 @@
       return {
         getTaskList: this.taskList,
         scrollBooster: null,
+        dataString:"",
       }
     },
 
@@ -60,6 +62,9 @@
         this.$nextTick(() => {
           this.scrollBooster.updateMetrics();
         });
+      },
+      saveData() {
+        alert(111)
       },
     },
 

@@ -12,7 +12,7 @@ const routes = [
         path: 'task',
         component: () => import('pages/taskPage.vue'),
         props: true,
-        name: "taskPage"
+        name: "TaskPage"
       }
     ]
   },

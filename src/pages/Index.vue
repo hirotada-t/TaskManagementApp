@@ -13,11 +13,11 @@
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-card-section>
-          <q-btn label="start anew" size="20px" icon="open_in_new" color="primary" href="/#/task"
-            class="q-mt-md full-width" />
+          <q-btn label="start anew" icon="open_in_new" size="20px" color="primary" class="q-mt-md full-width"
+            @click="fileHandle" />
           <q-btn label="use past data" icon="file_upload" size="20px" color="primary" class="q-mt-md full-width"
             @click="btnclick" />
-          <input type="file" class="hidden" ref="input" accept="application/json" @change="selectedFile()">
+          <input type="file" class="hidden" ref="input" accept="application/json" @change="fileHandle">
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -42,17 +42,20 @@
         this.$refs.input.click();
       },
 
-      async selectedFile() {
-        this.isUploading = true;
-        const file = this.$refs.input.files[0]
+      async fileHandle() {
+        const file = this.$refs.input.files[0];
         if (!file) {
+          this.$router.push({
+            name: "TaskPage",
+            params: { taskList: [] }
+          });
           return;
         }
         let reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
           this.$router.push({
-            name: "taskPage",
+            name: "TaskPage",
             params: { taskList: JSON.parse(reader.result) }
           });
         };
