@@ -13,7 +13,7 @@
           </div>
         </div>
       </div>
-      <q-btn flat class="full-width bg-dark text-white" label="save" @click="saveData" />
+      <q-btn flat class="full-width bg-dark text-white q-my-xl" label="save" @click="saveData" />
     </div>
   </q-page>
 </template>
@@ -43,7 +43,7 @@
     methods: {
       addSection() {
         this.getTaskList.push({
-          "sectionName": "newSection",
+          "sectionName": "",
           "sectionPosNum": this.getTaskList.length + 1,
           "cardList": []
         });
@@ -91,17 +91,25 @@
 
     mounted() {
       // Horizontal Image Slider
-      let viewport = document.querySelector(".viewport");
-      let content = document.querySelector(".content");
+      const viewport = document.querySelector(".viewport");
+      const content = document.querySelector(".content");
       this.scrollBooster = this.setScrollBooster(viewport, content);
+
+      // get out of focus
+      const body = document.querySelector("body");
+      viewport.addEventListener("click", (e) => {
+        if(e.target !== document.activeElement) {
+          document.activeElement.blur();
+        }
+      });
     },
 
     beforeRouteLeave(to, from, next) {
       const answer = window.confirm("保存していないデータは失われます。よろしいですか？")
       if (answer) {
-        next()
+        next();
       } else {
-        next(false)
+        next(false);
       }
     },
   }

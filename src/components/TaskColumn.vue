@@ -2,7 +2,7 @@
   <div class="q-pa-sm w-300px">
     <q-card class="my-card bg-blue-grey-1">
       <q-card-section>
-        <div class="text-h6">{{getSection.sectionName}}</div>
+        <q-input borderless v-model="getSection.sectionName" class="text-h6" label="sectionName" />
       </q-card-section>
       <q-card-section class="h-full q-py-none">
         <div v-for="card of getSection.cardList" :key="card.cardPosNum">
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import TaskItem from './TaskItem.vue'
+  import TaskItem from './TaskItem.vue';
 
   export default {
     name: 'TaskColumn',
@@ -39,7 +39,7 @@
       addCard() {
         const date = new Date();
         this.getSection.cardList.push({
-          "cardName": "newCard",
+          "cardName": "",
           "cardPosNum": this.getSection.cardList.length + 1,
           "cardContent": "content",
           "createDate": date.toLocaleString(),

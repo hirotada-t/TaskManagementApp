@@ -1,7 +1,7 @@
 <template>
   <q-card class="my-card q-mb-md">
-    <q-card-section>
-      {{getCards.cardName}}
+    <q-card-section class="q-py-none q-px-sm">
+      <q-input borderless v-model="getCards.cardName" label="cardName"/>
     </q-card-section>
   </q-card>
 </template>
@@ -13,12 +13,15 @@
     props: {
       card: Object
     },
-    
+
     data() {
       return {
         getCards: this.card
       }
-    }
+    },
+
+    computed: {
+    },
   }
 </script>
 
