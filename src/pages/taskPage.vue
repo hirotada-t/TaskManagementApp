@@ -1,7 +1,22 @@
 <template>
   <q-page>
-    <div class="q-py-md task-container">
-      <div class="viewport">
+    <q-header elevated class="bg-grey-7 desktop-only text-black">
+      <q-toolbar class="row no-wrap item-center q-px-md q-py-sm q-gutter-md">
+        <div>
+          <q-btn icon="keyboard_return" class="full-width bg-grey-4" label="back" size="15px" href="/" />
+        </div>
+        <div class="flex item-centerb task-list-title">
+          <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
+            class="full-width" style="font-size: 25px;" />
+        </div>
+        <div class="col-2">
+          <q-btn label="save" class="full-width bg-deep-orange-3" @click="saveData" size="15px" icon="save_alt" />
+        </div>
+      </q-toolbar>
+    </q-header>
+
+    <div class="task-container">
+      <div class="q-py-md q-py-md viewport">
         <div class="row no-wrap q-gutter-none content">
           <div v-for="section of getTaskList" :key="section.sectionPosNum">
             <TaskColumn :section="section"></TaskColumn>
@@ -13,8 +28,17 @@
           </div>
         </div>
       </div>
-      <q-btn flat class="full-width bg-dark text-white q-my-xl" label="save" @click="saveData" />
+      <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle" class="full-width mobile-only"
+        style="font-size: 20px;" />
     </div>
+
+    <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
+      <q-tabs align="center">
+        <q-tab dense flat round icon="keyboard_return" />
+        <q-tab dense flat round icon="save_alt" @click="saveData" />
+        <q-tab dense flat round :icon="scaleIcon" @click="scaleCardArea" />
+      </q-tabs>
+    </q-footer>
   </q-page>
 </template>
 
@@ -35,8 +59,10 @@
 
     data() {
       return {
+        scaleIcon: "zoom_in",
         getTaskList: this.taskList ? this.taskList : [],
         scrollBooster: null,
+        taskListTitle: "",
       }
     },
 
@@ -65,20 +91,34 @@
       async saveData() {
         const date = new Date();
         const options = {
-          suggestedName: date.toLocaleString(),
+          suggestedName: this.taskListTitle ? this.taskListTitle : date.toLocaleString(),
           types: [{
             description: 'JSON file',
             accept: { 'application/json': ['.json'] },
           }],
         };
-        const handle = await window.showSaveFilePicker(options);
-        const writable = await handle.createWritable();
-        await writable.write(JSON.stringify(this.getTaskList));
-        await writable.close();
+        try {
+          const handle = await window.showSaveFilePicker(options);
+          const writable = await handle.createWritable();
+          await writable.write(JSON.stringify(this.getTaskList));
+          await writable.close();
+        } catch (e) {
+          alert("保存をキャンセルしました。")
+        }
       },
       confirmSave(event) {
         event.returnValue = "";
       },
+      scaleCardArea() {
+        const content = document.querySelector(".content");
+        if (content.classList.contains("zoom-out")) {
+          content.classList.remove("zoom-out");
+          this.scaleIcon = "zoom_in";
+        } else {
+          content.classList.add("zoom-out");
+          this.scaleIcon = "zoom_out";
+        }
+      }
     },
 
     created() {
@@ -96,10 +136,16 @@
       this.scrollBooster = this.setScrollBooster(viewport, content);
 
       // get out of focus
-      const body = document.querySelector("body");
       viewport.addEventListener("click", (e) => {
-        if(e.target !== document.activeElement) {
+        if (e.target !== document.activeElement) {
           document.activeElement.blur();
+        }
+      });
+
+      const taskListTitle = document.querySelector(".task-list-title");
+      taskListTitle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          this.saveData();
         }
       });
     },
@@ -118,7 +164,7 @@
 <style lang="scss" scoped>
   .task-container {
     @media screen and (min-width:1024px) {
-      height: calc(100vh - 50px);
+      height: calc(100vh - 140px);
     }
 
     height: calc(100vh - 100px);
@@ -133,6 +179,11 @@
     overflow-y: hidden;
     height: 100%;
     margin: auto;
+
+    @media screen and (max-width:599px) {
+      display: flex;
+      align-items: flex-end;
+    }
   }
 
   .viewport::-webkit-scrollbar {
@@ -152,6 +203,10 @@
 
   .content {
     transition: .3s;
+
+    @media screen and (max-width:599px) {
+      align-items: flex-end;
+    }
   }
 
   .zoom-out {
