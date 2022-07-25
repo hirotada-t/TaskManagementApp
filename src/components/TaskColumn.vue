@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-sm w-300px">
     <q-card class="my-card bg-blue-grey-1">
-      <q-card-section>
+      <q-card-section class="section-name order-xs-first">
         <q-input borderless v-model="getSection.sectionName" class="text-h6" label="sectionName" />
       </q-card-section>
       <q-card-section class="h-full q-py-none">
@@ -10,7 +10,6 @@
         </div>
       </q-card-section>
       <q-btn flat class="full-width q-py-sm bg-dark text-white" label="＋ add card" @click="addCard" />
-
     </q-card>
   </div>
 </template>
@@ -49,12 +48,22 @@
           "archives": false,
           "cardComment": "comment",
           "cardStar": false
-        })
-      }
+        });
+      },
     },
 
     computed: {
-    }
+    },
+
+    mounted() {
+      // get out of focus
+      const sectionName = document.querySelector(".section-name input");
+      sectionName.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          document.activeElement.blur();
+        }
+      });
+    },
   }
 </script>
 
@@ -69,7 +78,7 @@
     }
 
     margin-right: 5px;
-    max-height: calc(100vh - 300px);
+    max-height: calc(100vh - 290px);
     overflow-x: auto;
   }
 
