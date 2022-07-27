@@ -2,8 +2,11 @@
   <div class="q-pa-sm w-300px" v-if="!getSection.archives">
     <q-card class="my-card bg-blue-grey-1">
       <q-card-section class="row justify-around section-name order-xs-first">
-        <q-input borderless autogrow v-model="getSection.sectionName" class="col-11 text-h6"
-          placeholder="sectionName" />
+        <q-input borderless bottom-slots autogrow v-model="getSection.sectionName" class="col-11 text-h6"
+          placeholder="sectionName">
+          <template v-slot:hint>
+            {{getSection.cardList.length}} {{getSection.cardList.length < 2 ?"task":"tasks"}} </template>
+        </q-input>
         <q-btn flat padding="xs" icon="more_vert" class="col-1">
           <q-menu transition-show="scale" transition-hide="scale">
             <q-list style="min-width: 100px">
@@ -108,6 +111,9 @@
       },
     },
     computed: {
+      // cardNum(){
+      //   return getSection.cardList.length;
+      // },
     },
 
     mounted() {
