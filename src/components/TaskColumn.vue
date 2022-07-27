@@ -20,7 +20,7 @@
       </q-card-section>
       <q-card-section class="h-full q-py-none">
         <div v-for="card of getSection.cardList" :key="card.cardPosNum">
-          <TaskItem :card="card"></TaskItem>
+          <TaskItem :card="card" :filtered="filter"></TaskItem>
         </div>
         <q-card class="my-card q-mb-md" v-if="newCardInput">
           <q-card-section class="q-py-none q-px-sm card-name text-h6">
@@ -41,7 +41,8 @@
     name: 'TaskColumn',
 
     props: {
-      section: { type: Object }
+      section: Object,
+      filter: Boolean
     },
 
     components: {

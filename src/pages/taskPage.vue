@@ -12,14 +12,21 @@
         <div class="col-2">
           <q-btn label="save" class="full-width bg-deep-orange-3" @click="saveData" size="15px" icon="save_alt" />
         </div>
+        <div class="col-2">
+          <q-btn :label="filtered ? 'filtered' : 'unfiltered'" class="full-width bg-light-blue-3"
+            @click="filtered = !filtered" size="15px" :icon="rmvUncleared">
+            <q-tooltip>
+              Remove uncleared
+            </q-tooltip>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
-
     <div class="task-container">
       <div class="q-py-md q-py-md viewport">
         <div class="row no-wrap q-gutter-none content">
           <div v-for="section of getTaskList" :key="section.sectionPosNum">
-            <TaskColumn :section="section"></TaskColumn>
+            <TaskColumn :section="section" :filter="filtered"></TaskColumn>
           </div>
           <div class="q-pa-sm w-300px" v-if="newSectionInput">
             <q-card class="my-card bg-blue-grey-1 q-pa-md">
@@ -40,7 +47,7 @@
 
     <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
       <q-tabs align="center">
-        <q-tab dense flat round icon="keyboard_return" />
+        <q-tab dense flat round icon="keyboard_return" href="/" />
         <q-tab dense flat round icon="save_alt" @click="saveData" />
         <q-tab dense flat round :icon="scaleIcon" @click="scaleCardArea" />
       </q-tabs>
@@ -50,7 +57,7 @@
 
 <script>
   import TaskColumn from '../components/TaskColumn.vue';
-  // import ScrollBooster from 'scrollbooster';
+  import ScrollBooster from 'scrollbooster';
   import { createApp, nextTick } from 'vue'
 
   export default {
@@ -72,6 +79,7 @@
         taskListTitle: "",
         newSection: "",
         newSectionInput: false,
+        filtered: false,
       }
     },
 
@@ -142,11 +150,17 @@
           this.scaleIcon = "zoom_out";
         } else {
           content.classList.add("zoom-out");
-          console.log(window.screen.width)
           content.style.width = window.screen.width + "px";
           this.scaleIcon = "zoom_in";
         }
-      }
+      },
+    },
+
+    computed: {
+      rmvUncleared() {
+        if (this.filtered) return "filter_alt";
+        else return "filter_alt_off"
+      },
     },
 
     created() {
@@ -163,6 +177,7 @@
       const content = document.querySelector(".content");
 
       if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
+        console.log(111)
         this.scrollBooster = this.setScrollBooster(viewport, content);
       }
 

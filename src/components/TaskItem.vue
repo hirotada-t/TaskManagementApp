@@ -1,18 +1,18 @@
 <template>
-  <q-card class="gnavi my-card q-mb-md" v-if="!getCards.archives" :class="getCards.priority">
+  <q-card class="gnavi my-card q-mb-md" v-if="!getCard.archives" v-show="removeUncleared" :class="getCard.priority">
     <div class="cleared-border" :class="cleared">
       <div>
         <q-card-section class="q-py-none q-px-sm card-name">
-          <q-input borderless autogrow v-model="getCards.cardName" class="col-11 text-h6" placeholder="cardName" />
-          <!-- <span class="text-h6" @click="setDetails = true">{{getCards.cardName}}</span> -->
+          <q-input borderless autogrow v-model="getCard.cardName" class="col-11 text-h6" placeholder="cardName" />
+          <!-- <span class="text-h6" @click="setDetails = true">{{getCard.cardName}}</span> -->
         </q-card-section>
         <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
           <div class="col-2">
-            <q-checkbox v-model="getCards.checked" color="black" />
-            <q-tooltip v-if="getCards.checked">
+            <q-checkbox v-model="getCard.checked" color="black" />
+            <q-tooltip v-if="getCard.checked">
               Cleared!
             </q-tooltip>
-            <q-tooltip v-if="!getCards.checked">
+            <q-tooltip v-if="!getCard.checked">
               Not cleared
             </q-tooltip>
           </div>
@@ -23,7 +23,7 @@
             </q-tooltip>
           </div>
           <div class="col-6 q-py-sm">
-            <q-select dense filled borderless v-model="getCards.priority" :options="options" label="priority" />
+            <q-select dense filled borderless v-model="getCard.priority" :options="options" label="priority" />
           </div>
         </q-card-section>
       </div>
@@ -33,7 +33,7 @@
         <q-header class="bg-blue-grey sp-none">
           <q-toolbar>
             <q-toolbar-title>
-              <q-input dense outlined bg-color="grey-4" v-model="getCards.cardName" label="change card title"
+              <q-input dense outlined bg-color="grey-4" v-model="getCard.cardName" label="change card title"
                 class="full-width" style="font-size: 25px;" />
             </q-toolbar-title>
             <q-btn dense flat round icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
@@ -43,7 +43,7 @@
         <q-footer class="bg-blue-grey">
           <q-toolbar class="tb-pc-none">
             <q-toolbar-title>
-              <q-input dense outlined bg-color="grey-4" v-model="getCards.cardName" label="change card title"
+              <q-input dense outlined bg-color="grey-4" v-model="getCard.cardName" label="change card title"
                 class="full-width" style="font-size: 25px;" />
             </q-toolbar-title>
             <q-btn flat v-close-popup round dense icon="close" />
@@ -75,23 +75,25 @@
     name: 'TaskItem',
 
     props: {
-      card: Object
+      card: Object,
+      filtered: Boolean,
     },
 
     data() {
       return {
-        getCards: this.card,
+        getCard: this.card,
         options: ["none", "high", "middle", "low"],
         drawerR: false,
         setDetails: false,
         expanded: true,
+        getFilter:this.filtered,
       }
     },
 
     methods: {
       archiveCard() {
         let message = "";
-        if (!this.getCards.checked) {
+        if (!this.getCard.checked) {
           message = "The task is uncompleted. Do you archive?"
         } else {
           message = "Do you archive the task?"
@@ -104,16 +106,27 @@
             color: 'negative'
           }
         }).onOk(() => {
-          this.getCards.archives = true;
+          this.getCard.archives = true;
         });
       },
     },
 
     computed: {
       cleared() {
-        if (this.getCards.checked) return "cleared";
+        console.log(this.getFilter)
+        if (this.getCard.checked) return "cleared";
         return "";
       },
+      removeUncleared(){
+        if(this.getFilter && this.getCard.checked) return false;
+        else return true;
+      },
+    },
+
+    watch:{
+      filtered(value){
+        this.getFilter = value;
+      }
     },
 
     mounted() {
