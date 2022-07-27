@@ -27,7 +27,7 @@
               <q-btn label="add" color="primary" @click="addSection" class="q-mt-sm" />
             </q-card>
           </div>
-          <div class="q-pa-sm w-300px \">
+          <div class="q-pa-sm w-300px">
             <q-card class="my-card bg-blue-grey-1">
               <q-btn flat class="full-width" label="＋ add sectiion" @click="addSectionInput" />
             </q-card>
@@ -50,7 +50,7 @@
 
 <script>
   import TaskColumn from '../components/TaskColumn.vue';
-  import ScrollBooster from 'scrollbooster';
+  // import ScrollBooster from 'scrollbooster';
   import { createApp, nextTick } from 'vue'
 
   export default {
@@ -79,11 +79,17 @@
       addSectionInput() {
         this.newSectionInput = !this.newSectionInput;
         this.$nextTick(() => {
-          if (document.querySelector(".new-section input") !== null) {
-            document.querySelector(".new-section input").focus();
-          }
+          const newSection = document.querySelector(".new-section input");
+          newSection.focus();
+          newSection.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              this.addSection();
+            }
+          })
         });
-        this.updateScrollBooster();
+        if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
+          this.updateScrollBooster();
+        }
       },
       addSection() {
         this.newSectionInput = !this.newSectionInput;
@@ -133,10 +139,12 @@
         const content = document.querySelector(".content");
         if (content.classList.contains("zoom-out")) {
           content.classList.remove("zoom-out");
-          this.scaleIcon = "zoom_in";
+          this.scaleIcon = "zoom_out";
         } else {
           content.classList.add("zoom-out");
-          this.scaleIcon = "zoom_out";
+          console.log(window.screen.width)
+          content.style.width = window.screen.width + "px";
+          this.scaleIcon = "zoom_in";
         }
       }
     },
@@ -153,7 +161,10 @@
       // Horizontal Image Slider
       const viewport = document.querySelector(".viewport");
       const content = document.querySelector(".content");
-      this.scrollBooster = this.setScrollBooster(viewport, content);
+
+      if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
+        this.scrollBooster = this.setScrollBooster(viewport, content);
+      }
 
       // get out of focus
       // viewport.addEventListener("click", (e) => {
@@ -230,9 +241,9 @@
   }
 
   .zoom-out {
-    @media screen and (max-width:1023px) {
-      transform-origin: left top;
-      transform: scale(0.5);
-    }
+    transform-origin: left top;
+    transform: scale(0.5);
+    margin-top: auto;
+    height: 200%;
   }
 </style>

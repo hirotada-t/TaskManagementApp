@@ -2,17 +2,18 @@
   <div class="q-pa-sm w-300px" v-if="!getSection.archives">
     <q-card class="my-card bg-blue-grey-1">
       <q-card-section class="row justify-around section-name order-xs-first">
-        <q-input borderless v-model="getSection.sectionName" class="text-h6" placeholder="sectionName" />
-        <q-btn flat padding="xs" icon="more_vert">
+        <q-input borderless autogrow v-model="getSection.sectionName" class="col-11 text-h6"
+          placeholder="sectionName" />
+        <q-btn flat padding="xs" icon="more_vert" class="col-1">
           <q-menu transition-show="scale" transition-hide="scale">
             <q-list style="min-width: 100px">
               <q-item clickable @click="archiveSection">
                 <q-item-section>archive section</q-item-section>
               </q-item>
               <q-separator />
-              <q-item clickable @click="sortPriority">
+              <!-- <q-item clickable @click="sortPriority">
                 <q-item-section>sort priority</q-item-section>
-              </q-item>
+              </q-item> -->
             </q-list>
           </q-menu>
         </q-btn>
@@ -59,9 +60,13 @@
       addSectionInput() {
         this.newCardInput = !this.newCardInput;
         this.$nextTick(() => {
-          if (document.querySelector(".new-card input") !== null) {
-            document.querySelector(".new-card input").focus();
-          }
+          const newSection = document.querySelector(".new-card input");
+          newSection.focus();
+          newSection.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              this.addCard();
+            }
+          })
         });
       },
       addCard() {
@@ -75,7 +80,7 @@
           // "deadLine": "",
           // "checkList": {},
           // "cardTags": [],
-          "priority": "",
+          "priority": "none",
           "checked": false,
           "archives": false,
           // "cardComment": "comment",
@@ -86,13 +91,19 @@
         this.$q.dialog({
           title: 'Alert',
           message: 'All cards in the section are also archived. Are you sure??',
-          cancel: true
+          cancel: {
+            push: true,
+            color: 'negative'
+          }
         }).onOk(() => {
           this.getSection.archives = true;
           for (let i = 0; i < this.getSection.cardList.length; i++) {
             this.getSection.cardList[i].archives = true;
           }
         });
+      },
+      sortPriority() {
+
       },
     },
     computed: {
@@ -116,6 +127,10 @@
     margin-right: 5px;
     max-height: calc(100vh - 290px);
     overflow-x: auto;
+  }
+
+  .zoom-out .h-full {
+    max-height: calc(200vh - 430px);
   }
 
   .h-full::-webkit-scrollbar {
