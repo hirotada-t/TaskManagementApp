@@ -1,28 +1,32 @@
 <template>
-  <q-card class="my-card q-mb-md" v-if="!getCards.archives" :class="getCards.priority">
-    <q-card-section class="q-py-none q-px-sm card-name">
-      <span class="text-h6">{{getCards.cardName}}</span>
-    </q-card-section>
-    <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
-      <div class="col-2">
-        <q-checkbox v-model="getCards.checked" color="black" />
-        <q-tooltip v-if="getCards.checked">
-          Cleared!
-        </q-tooltip>
-        <q-tooltip v-if="!getCards.checked">
-          Not cleared
-        </q-tooltip>
+  <q-card class="gnavi my-card q-mb-md" v-if="!getCards.archives" :class="getCards.priority">
+    <div class="cleared-border" :class="cleared">
+      <div>
+        <q-card-section class="q-py-none q-px-sm card-name">
+          <span class="text-h6">{{getCards.cardName}}</span>
+        </q-card-section>
+        <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
+          <div class="col-2">
+            <q-checkbox v-model="getCards.checked" color="black" />
+            <q-tooltip v-if="getCards.checked">
+              Cleared!
+            </q-tooltip>
+            <q-tooltip v-if="!getCards.checked">
+              Not cleared
+            </q-tooltip>
+          </div>
+          <div class="col-3">
+            <q-btn flat @click="getCards.archives = true" icon="archive" />
+            <q-tooltip>
+              Archive
+            </q-tooltip>
+          </div>
+          <div class="col-6">
+            <q-select v-model="getCards.priority" :options="options" label="priority" />
+          </div>
+        </q-card-section>
       </div>
-      <div class="col-3">
-        <q-btn flat @click="getCards.archives = true" icon="archive" />
-        <q-tooltip>
-          Archive
-        </q-tooltip>
-      </div>
-      <div class="col-6">
-        <q-select v-model="getCards.priority" :options="options" label="priority" />
-      </div>
-    </q-card-section>
+    </div>
   </q-card>
 </template>
 
@@ -45,6 +49,10 @@
     },
 
     computed: {
+      cleared() {
+        if (this.getCards.checked) return "cleared";
+        return "";
+      },
     },
 
     mounted() {
@@ -68,5 +76,68 @@
 
   .low {
     background-color: #7fffbf;
+  }
+
+  .gnavi .cleared-border {
+    position: relative;
+  }
+
+  .gnavi .cleared-border::before,
+  .gnavi .cleared-border::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: #fc693b;
+    background-image:
+      repeating-linear-gradient(-45deg,
+        #fff, #fff 7px,
+        transparent 0, transparent 14px);
+    transition: all 0.2s linear;
+    transition-delay: 0.2s;
+  }
+
+  .gnavi .cleared-border::before {
+    right: 0;
+    top: 0;
+  }
+
+  .gnavi .cleared-border::after {
+    left: 0;
+    bottom: 0;
+  }
+
+  .gnavi .cleared-border div::before,
+  .gnavi .cleared-border div::after {
+    content: "";
+    position: absolute;
+    width: 3px;
+    height: 0;
+    background-color: #fc693b;
+    background-image:
+      repeating-linear-gradient(-45deg,
+        #fff, #fff 7px,
+        transparent 0, transparent 14px);
+    transition: all 0.2s linear;
+  }
+
+  .gnavi .cleared-border div::before {
+    left: 0;
+    top: 0;
+  }
+
+  .gnavi .cleared-border div::after {
+    right: 0;
+    bottom: 0;
+  }
+
+  .gnavi .cleared::before,
+  .gnavi .cleared::after {
+    width: 100%;
+  }
+
+  .gnavi .cleared div::before,
+  .gnavi .cleared div::after {
+    height: 100%;
   }
 </style>
