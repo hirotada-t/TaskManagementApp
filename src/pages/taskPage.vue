@@ -21,15 +21,21 @@
           <div v-for="section of getTaskList" :key="section.sectionPosNum">
             <TaskColumn :section="section"></TaskColumn>
           </div>
-          <div class="q-pa-sm w-300px">
+          <div class="q-pa-sm w-300px" v-if="newSectionInput">
+            <q-card class="my-card bg-blue-grey-1 q-pa-md">
+              <q-input borderless class="new-section" v-model="newSection" placeholder="sectionName" />
+              <q-btn label="add" color="primary" @click="addSection" class="q-mt-sm" />
+            </q-card>
+          </div>
+          <div class="q-pa-sm w-300px \">
             <q-card class="my-card bg-blue-grey-1">
-              <q-btn flat class="full-width" label="＋ add sectiion" @click="addSection" />
+              <q-btn flat class="full-width" label="＋ add sectiion" @click="addSectionInput" />
             </q-card>
           </div>
         </div>
       </div>
-      <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle" class="full-width mobile-only"
-        style="font-size: 20px;" />
+      <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
+        class="full-width mobile-only" style="font-size: 20px;" />
     </div>
 
     <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
@@ -45,6 +51,7 @@
 <script>
   import TaskColumn from '../components/TaskColumn.vue';
   import ScrollBooster from 'scrollbooster';
+  import { createApp, nextTick } from 'vue'
 
   export default {
     name: 'PageIndex',
@@ -63,17 +70,30 @@
         getTaskList: this.taskList ? this.taskList : [],
         scrollBooster: null,
         taskListTitle: "",
+        newSection: "",
+        newSectionInput: false,
       }
     },
 
     methods: {
-      addSection() {
-        this.getTaskList.push({
-          "sectionName": "",
-          "sectionPosNum": this.getTaskList.length + 1,
-          "cardList": []
+      addSectionInput() {
+        this.newSectionInput = !this.newSectionInput;
+        this.$nextTick(() => {
+          if (document.querySelector(".new-section input") !== null) {
+            document.querySelector(".new-section input").focus();
+          }
         });
         this.updateScrollBooster();
+      },
+      addSection() {
+        this.newSectionInput = !this.newSectionInput;
+        this.getTaskList.push({
+          "sectionName": this.newSection ? this.newSection : "No section title",
+          "sectionPosNum": this.getTaskList.length + 1,
+          "archives": false,
+          "cardList": []
+        });
+        this.newSection = ""
       },
       setScrollBooster(viewport, content) {
         return new ScrollBooster({
@@ -136,11 +156,11 @@
       this.scrollBooster = this.setScrollBooster(viewport, content);
 
       // get out of focus
-      viewport.addEventListener("click", (e) => {
-        if (e.target !== document.activeElement) {
-          document.activeElement.blur();
-        }
-      });
+      // viewport.addEventListener("click", (e) => {
+      //   if (e.target !== document.activeElement) {
+      //     document.activeElement.blur();
+      //   }
+      // });
 
       const taskListTitle = document.querySelector(".task-list-title");
       taskListTitle.addEventListener("keydown", (e) => {
@@ -210,7 +230,9 @@
   }
 
   .zoom-out {
-    transform-origin: left top;
-    transform: scale(0.5);
+    @media screen and (max-width:1023px) {
+      transform-origin: left top;
+      transform: scale(0.5);
+    }
   }
 </style>
