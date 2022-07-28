@@ -23,7 +23,7 @@
       </q-card-section>
       <q-card-section class="h-full q-py-none">
         <div v-for="card of getSection.cardList" :key="card.cardPosNum">
-          <TaskItem :card="card" :filtered="filter"></TaskItem>
+          <TaskItem :card="card" :filtered="filter" @add-archive="addArchive"></TaskItem>
         </div>
         <q-card class="my-card q-mb-md" v-if="newCardInput">
           <q-card-section class="q-py-none q-px-sm card-name text-h6">
@@ -79,7 +79,7 @@
         this.getSection.cardList.push({
           "cardName": this.newCard ? this.newCard : "No card title",
           // "cardPosNum": this.getSection.cardList.length + 1,
-          "cardContent": "content",
+          // "cardContent": "content",
           // "createDate": date.toLocaleString(),
           // "deadLine": "",
           // "checkList": {},
@@ -106,14 +106,14 @@
           }
         });
       },
+      addArchive(e) {
+        this.$emit("add-archive-list", e);
+      },
       sortPriority() {
 
       },
     },
     computed: {
-      // cardNum(){
-      //   return getSection.cardList.length;
-      // },
     },
 
     mounted() {

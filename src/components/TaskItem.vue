@@ -86,7 +86,7 @@
         drawerR: false,
         setDetails: false,
         expanded: true,
-        getFilter:this.filtered,
+        getFilter: this.filtered,
       }
     },
 
@@ -107,24 +107,35 @@
           }
         }).onOk(() => {
           this.getCard.archives = true;
+          this.$emit("add-archive", {
+            "cardName": this.getCard.cardName,
+            // "cardPosNum": this.getSection.cardList.length + 1,
+            // "cardContent": "content",
+            // "createDate": date.toLocaleString(),
+            // "deadLine": "",
+            // "checkList": {},
+            // "cardTags": [],
+            "priority": this.getCard.priority,
+            "checked": this.getCard.checked,
+            // "cardComment": "comment",
+          });
         });
       },
     },
 
     computed: {
       cleared() {
-        console.log(this.getFilter)
         if (this.getCard.checked) return "cleared";
         return "";
       },
-      removeUncleared(){
-        if(this.getFilter && this.getCard.checked) return false;
+      removeUncleared() {
+        if (this.getFilter && this.getCard.checked) return false;
         else return true;
       },
     },
 
-    watch:{
-      filtered(value){
+    watch: {
+      filtered(value) {
         this.getFilter = value;
       }
     },

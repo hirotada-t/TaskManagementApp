@@ -1,11 +1,11 @@
 <template>
   <q-page>
     <q-header elevated class="bg-grey-7 desktop-only text-black">
-      <q-toolbar class="row no-wrap item-center q-px-md q-py-sm q-gutter-md">
-        <div>
+      <q-toolbar class="q-py-sm q-gutter-md">
+        <div class="col-1">
           <q-btn icon="keyboard_return" class="full-width bg-grey-4" label="back" size="15px" href="/" />
         </div>
-        <div class="flex item-centerb task-list-title">
+        <div class="col-3 task-list-title">
           <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
             class="full-width" style="font-size: 25px;" />
         </div>
@@ -20,13 +20,52 @@
             </q-tooltip>
           </q-btn>
         </div>
+        <q-btn dense flat class="text-white q-ml-auto" round icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
       </q-toolbar>
     </q-header>
+    <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile" bordered>
+      <div class="column menu-justify" style="height:100%;">
+        <div class="desktop-only">
+          <div class="text-right q-px-md">
+            <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
+          </div>
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item expand-separator icon="menu" label="other menu">
+              <q-card>
+                <q-card-section>aaaa</q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+        </div>
+        <div v-if="archiveList.length != 0">
+          <div v-for="item of archiveList" :key="item.cardName">
+            <ArchiveItem :archiveItem="item"></ArchiveItem>
+          </div>
+        </div>
+        <div v-else class="text-center">
+          <p class="text-h4 q-py-md">Archive List</p>
+          <p class="text-h5">No Archives…</p>
+        </div>
+        <div class="mobile-only">
+          <q-list bordered class="rounded-borders">
+            <q-expansion-item expand-separator icon="menu" label="other menu">
+              <q-card>
+                <q-card-section>aaaa</q-card-section>
+              </q-card>
+            </q-expansion-item>
+          </q-list>
+          <div class="text-right q-px-md">
+            <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
+          </div>
+        </div>
+      </div>
+    </q-drawer>
+
     <div class="task-container">
       <div class="q-py-md q-py-md viewport">
         <div class="row no-wrap q-gutter-none content">
           <div v-for="section of getTaskList" :key="section.sectionPosNum">
-            <TaskColumn :section="section" :filter="filtered"></TaskColumn>
+            <TaskColumn :section="section" :filter="filtered" @add-archive-list="addArchiveList"></TaskColumn>
           </div>
           <div class="q-pa-sm w-300px" v-if="newSectionInput">
             <q-card class="my-card bg-blue-grey-1 q-pa-md">
@@ -46,17 +85,21 @@
     </div>
 
     <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
-      <q-tabs align="center">
+      <q-tabs align="justify">
         <q-tab dense flat round icon="keyboard_return" href="/" />
         <q-tab dense flat round icon="save_alt" @click="saveData" />
         <q-tab dense flat round :icon="scaleIcon" @click="scaleCardArea" />
+        <q-tab dense flat round :icon="rmvUncleared" @click="filtered = !filtered" />
+        <q-tab dense flat round icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
       </q-tabs>
     </q-footer>
+
   </q-page>
 </template>
 
 <script>
   import TaskColumn from '../components/TaskColumn.vue';
+  import ArchiveItem from '../components/ArchiveItem.vue';
   import ScrollBooster from 'scrollbooster';
   import { createApp, nextTick } from 'vue'
 
@@ -69,17 +112,20 @@
 
     components: {
       TaskColumn,
+      ArchiveItem,
     },
 
     data() {
       return {
         scaleIcon: "zoom_in",
+        rightDrawerOpen: false,
         getTaskList: this.taskList ? this.taskList : [],
         scrollBooster: null,
         taskListTitle: "",
         newSection: "",
         newSectionInput: false,
         filtered: false,
+        archiveList: [],
       }
     },
 
@@ -154,6 +200,9 @@
           this.scaleIcon = "zoom_in";
         }
       },
+      addArchiveList(e){
+        this.archiveList.push(e);
+      },
     },
 
     computed: {
@@ -177,7 +226,6 @@
       const content = document.querySelector(".content");
 
       if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
-        console.log(111)
         this.scrollBooster = this.setScrollBooster(viewport, content);
       }
 
@@ -208,6 +256,12 @@
 </script>
 
 <style lang="scss" scoped>
+  .menu-justify {
+    @media screen and (max-width:1023px) {
+      justify-content: space-between;
+    }
+  }
+
   .task-container {
     @media screen and (min-width:1024px) {
       height: calc(100vh - 140px);
