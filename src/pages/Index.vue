@@ -25,7 +25,6 @@
 </template>
 
 <script>
-  import { ref } from 'vue';
 
   export default {
 
@@ -38,7 +37,6 @@
       btnclick() {
         this.$refs.input.click();
       },
-
       async fileHandle() {
         const file = this.$refs.input.files[0];
         if (!file) {

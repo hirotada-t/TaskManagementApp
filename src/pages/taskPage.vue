@@ -25,28 +25,40 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile" bordered>
-      <div class="column menu-justify" style="height:100%;">
+      <div class="column menu-justify bg-blue-grey-1" style="height:100%;">
         <div class="desktop-only">
           <div class="text-right q-px-md">
             <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
           </div>
           <q-list bordered class="rounded-borders">
-            <q-expansion-item class="text-h5" expand-separator label="create another">
-              <q-card class="text-body2">
-                <q-card-section>start anew</q-card-section>
-                <q-card-section>use past data</q-card-section>
-              </q-card>
+            <q-expansion-item class="text-h5" expand-separator label="Others">
+              <q-list class="text-h6">
+                <q-item clickable v-ripple href="/#/task" target="_brank">
+                  <q-item-section class="items-end" avatar>
+                    <q-icon name="open_in_new" />
+                  </q-item-section>
+                  <q-item-section>create anew</q-item-section>
+                </q-item>
+                <q-item clickable v-ripple href="/">
+                  <q-item-section class="items-end" avatar>
+                    <q-icon name="keyboard_return" />
+                  </q-item-section>
+                  <q-item-section>back to Top</q-item-section>
+                </q-item>
+              </q-list>
             </q-expansion-item>
           </q-list>
         </div>
-        <div v-if="archiveList.length != 0" class="archive-area">
-          <p class="text-h5 q-pt-md q-pl-md">Archive List</p>
-          <div v-for="item of archiveList" :key="item.cardId">
-            <ArchiveItem :archiveItem="item"></ArchiveItem>
+        <p class="text-h5 q-pt-md q-pl-md">Archive List</p>
+        <div v-if="archiveList.length != 0">
+          <div class="archive-area bg-blue-grey">
+            <div v-for="item of archiveList" :key="item.cardId">
+              <ArchiveItem :archiveItem="item"></ArchiveItem>
+            </div>
           </div>
         </div>
         <div v-else class="text-center">
-          <p class="text-h5">No Archives…</p>
+          <p class="text-h6 text-indigo-7"><span class="material-icons">search_off</span>No Archives…</p>
         </div>
         <div class="mobile-only">
           <q-list bordered class="rounded-borders">
@@ -239,6 +251,7 @@
         }
       });
 
+      if (typeof this.taskList === "undefined") return;
       if (this.taskList.length > 0) {
         for (let i = 0; i < this.taskList.length; i++) {
 
@@ -338,9 +351,10 @@
   }
 
   .archive-area {
-    max-height: calc(100vh - 210px);
+    max-height: calc(100vh - 280px);
     overflow: auto;
   }
+
   .archive-area::-webkit-scrollbar {
     width: 5px;
   }
