@@ -23,6 +23,7 @@
         <q-btn dense flat class="text-white q-ml-auto" round icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
       </q-toolbar>
     </q-header>
+
     <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile" bordered>
       <div class="column menu-justify" style="height:100%;">
         <div class="desktop-only">
@@ -30,20 +31,21 @@
             <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
           </div>
           <q-list bordered class="rounded-borders">
-            <q-expansion-item expand-separator icon="menu" label="other menu">
-              <q-card>
-                <q-card-section>aaaa</q-card-section>
+            <q-expansion-item class="text-h5" expand-separator label="create another">
+              <q-card class="text-body2">
+                <q-card-section>start anew</q-card-section>
+                <q-card-section>use past data</q-card-section>
               </q-card>
             </q-expansion-item>
           </q-list>
         </div>
-        <div v-if="archiveList.length != 0">
-          <div v-for="item of archiveList" :key="item.cardName">
+        <div v-if="archiveList.length != 0" class="archive-area">
+          <p class="text-h5 q-pt-md q-pl-md">Archive List</p>
+          <div v-for="item of archiveList" :key="item.cardId">
             <ArchiveItem :archiveItem="item"></ArchiveItem>
           </div>
         </div>
         <div v-else class="text-center">
-          <p class="text-h4 q-py-md">Archive List</p>
           <p class="text-h5">No Archives…</p>
         </div>
         <div class="mobile-only">
@@ -64,7 +66,7 @@
     <div class="task-container">
       <div class="q-py-md q-py-md viewport">
         <div class="row no-wrap q-gutter-none content">
-          <div v-for="section of getTaskList" :key="section.sectionPosNum">
+          <div v-for="section of getTaskList" :key="section.sectionId">
             <TaskColumn :section="section" :filter="filtered" @add-archive-list="addArchiveList"></TaskColumn>
           </div>
           <div class="q-pa-sm w-300px" v-if="newSectionInput">
@@ -146,14 +148,16 @@
         }
       },
       addSection() {
+        const date = new Date();
         this.newSectionInput = !this.newSectionInput;
         this.getTaskList.push({
+          "sectionId": "s-" + date.toLocaleString(),
           "sectionName": this.newSection ? this.newSection : "No section title",
           "sectionPosNum": this.getTaskList.length + 1,
           "archives": false,
           "cardList": []
         });
-        this.newSection = ""
+        this.newSection = "";
       },
       setScrollBooster(viewport, content) {
         return new ScrollBooster({
@@ -183,7 +187,7 @@
           await writable.write(JSON.stringify(this.getTaskList));
           await writable.close();
         } catch (e) {
-          alert("保存をキャンセルしました。")
+          alert("保存をキャンセルしました。");
         }
       },
       confirmSave(event) {
@@ -200,15 +204,15 @@
           this.scaleIcon = "zoom_in";
         }
       },
-      addArchiveList(e){
-        this.archiveList.push(e);
+      addArchiveList(e) {
+        this.archiveList.unshift(e);
       },
     },
 
     computed: {
       rmvUncleared() {
         if (this.filtered) return "filter_alt";
-        else return "filter_alt_off"
+        else return "filter_alt_off";
       },
     },
 
@@ -224,17 +228,9 @@
       // Horizontal Image Slider
       const viewport = document.querySelector(".viewport");
       const content = document.querySelector(".content");
-
       if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
         this.scrollBooster = this.setScrollBooster(viewport, content);
       }
-
-      // get out of focus
-      // viewport.addEventListener("click", (e) => {
-      //   if (e.target !== document.activeElement) {
-      //     document.activeElement.blur();
-      //   }
-      // });
 
       const taskListTitle = document.querySelector(".task-list-title");
       taskListTitle.addEventListener("keydown", (e) => {
@@ -242,6 +238,31 @@
           this.saveData();
         }
       });
+
+      if (this.taskList.length > 0) {
+        for (let i = 0; i < this.taskList.length; i++) {
+
+          if (this.taskList[i].cardList.length > 0) {
+            for (let j = 0; j < this.taskList[i].cardList.length; j++) {
+              if (this.taskList[i].cardList[j].archives) {
+                this.archiveList.push({
+                  "cardName": this.taskList[i].cardList[j].cardName,
+                  // "cardPosNum": this.getSection.cardList.length + 1,
+                  // "cardContent": "content",
+                  // "createDate": date.toLocaleString(),
+                  // "deadLine": "",
+                  // "checkList": {},
+                  // "cardTags": [],
+                  "priority": this.taskList[i].cardList[j].priority,
+                  "checked": this.taskList[i].cardList[j].checked,
+                  // "cardComment": "comment",
+                });
+              }
+            }
+          }
+
+        }
+      }
     },
 
     beforeRouteLeave(to, from, next) {
@@ -314,5 +335,24 @@
     transform: scale(0.5);
     margin-top: auto;
     height: 200%;
+  }
+
+  .archive-area {
+    max-height: calc(100vh - 210px);
+    overflow: auto;
+  }
+  .archive-area::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .archive-area::-webkit-scrollbar-track {
+    background-color: #55555570;
+    border-radius: 100px;
+    margin: 8px;
+  }
+
+  .archive-area::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background-color: #eee;
   }
 </style>

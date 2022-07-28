@@ -22,7 +22,7 @@
         </q-btn>
       </q-card-section>
       <q-card-section class="h-full q-py-none">
-        <div v-for="card of getSection.cardList" :key="card.cardPosNum">
+        <div v-for="card of getSection.cardList" :key="card.cardId">
           <TaskItem :card="card" :filtered="filter" @add-archive="addArchive"></TaskItem>
         </div>
         <q-card class="my-card q-mb-md" v-if="newCardInput">
@@ -77,6 +77,7 @@
         this.newCardInput = !this.newCardInput;
         const date = new Date();
         this.getSection.cardList.push({
+          "cardId": "c-" + date.toLocaleString(),
           "cardName": this.newCard ? this.newCard : "No card title",
           // "cardPosNum": this.getSection.cardList.length + 1,
           // "cardContent": "content",
@@ -103,6 +104,19 @@
           this.getSection.archives = true;
           for (let i = 0; i < this.getSection.cardList.length; i++) {
             this.getSection.cardList[i].archives = true;
+            this.$emit("add-archive-list", {
+              "cardId": this.getSection.cardList[i].cardId,
+              "cardName": this.getSection.cardList[i].cardName,
+              // "cardPosNum": this.getSection.cardList.length + 1,
+              // "cardContent": "content",
+              // "createDate": date.toLocaleString(),
+              // "deadLine": "",
+              // "checkList": {},
+              // "cardTags": [],
+              "priority": this.getSection.cardList[i].priority,
+              "checked": this.getSection.cardList[i].checked,
+              // "cardComment": "comment",
+            });
           }
         });
       },

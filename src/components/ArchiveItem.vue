@@ -1,16 +1,22 @@
 <template>
-  <q-card class="gnavi my-card q-my-md q-mx-auto" :class="getArchiveItem.priority">
-    <div class="cleared-border" :class="getArchiveItem.checked ? 'cleared' : ''">
+  <q-card class="gnavi my-card q-my-md q-mx-auto" :class="archiveItem.priority">
+    <div class="cleared-border" :class="archiveItem.checked ? 'cleared' : ''">
       <div>
         <q-card-section class="row justify-between q-py-none q-px-sm card-name text-h6">
-          {{getArchiveItem.cardName}}<span class="material-icons">delete</span>
+          {{archiveItem.cardName}}<span class="material-icons">delete</span>
         </q-card-section>
         <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
           <div class="col-3">
-            <q-checkbox disable v-model="getArchiveItem.checked" color="black" />
+            <q-checkbox disable :value="archiveItem.checked" color="black" />
+            <q-tooltip v-if="archiveItem.checked">
+              Cleared!
+            </q-tooltip>
+            <q-tooltip v-if="!archiveItem.checked">
+              Not cleared
+            </q-tooltip>
           </div>
           <div class="col-6 q-py-sm">
-            <q-input disable dense borderless v-model="getArchiveItem.priority" label="priority" />
+            <q-input disable dense borderless :value="archiveItem.priority" label="priority" />
           </div>
         </q-card-section>
       </div>
