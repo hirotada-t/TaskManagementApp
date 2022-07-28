@@ -4,8 +4,7 @@
       <q-card-section class="row justify-around section-name order-xs-first">
         <q-input borderless bottom-slots autogrow v-model="getSection.sectionName" class="col-11 text-h6"
           placeholder="sectionName">
-          <template v-slot:hint>
-            {{getSection.cardList.length}} {{getSection.cardList.length < 2 ?"task":"tasks"}} </template>
+          <template v-slot:hint>{{countCards()}}</template>
         </q-input>
         <q-btn flat padding="xs" icon="more_vert" class="col-1">
           <q-menu transition-show="scale" transition-hide="scale">
@@ -122,6 +121,15 @@
       },
       addArchive(e) {
         this.$emit("add-archive-list", e);
+      },
+      countCards() {
+        let counter = 0;
+        for (let i = 0; i < this.getSection.cardList.length; i++) {
+          if (!this.getSection.cardList[i].archives) {
+            counter++;
+          }
+        }
+        if (counter >= 2) return counter + " tasks";
       },
       sortPriority() {
 
