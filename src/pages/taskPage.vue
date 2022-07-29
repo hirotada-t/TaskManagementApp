@@ -30,51 +30,45 @@
     </q-header>
 
     <q-drawer v-model="rightDrawerOpen" side="right" overlay behavior="mobile" bordered>
-      <div class="column menu-justify bg-blue-grey-1" style="height:100%;">
-        <div class="desktop-only">
-          <div class="text-right q-px-md">
-            <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
-          </div>
-          <q-list bordered class="rounded-borders">
-            <q-expansion-item class="text-h5" expand-separator label="Others">
-              <q-list class="text-h6">
-                <q-item clickable v-ripple href="/#/task" target="_brank">
-                  <q-item-section class="items-end" avatar>
-                    <q-icon name="open_in_new" />
-                  </q-item-section>
-                  <q-item-section>create anew</q-item-section>
-                </q-item>
-                <q-item clickable v-ripple href="/">
-                  <q-item-section class="items-end" avatar>
-                    <q-icon name="keyboard_return" />
-                  </q-item-section>
-                  <q-item-section>back to Top</q-item-section>
-                </q-item>
-              </q-list>
-            </q-expansion-item>
-          </q-list>
-        </div>
-        <p class="text-h5 q-pt-md q-pl-md">Archive List</p>
-        <div v-if="archiveList.length != 0">
-          <div class="archive-area bg-blue-grey">
-            <div v-for="item of archiveList" :key="item.cardId">
-              <ArchiveItem :archiveItem="item" @deleted-item="deletedUpdate"></ArchiveItem>
+      <div class="column column-responsive-reverse menu-justify bg-blue-grey-1" style="height:100%;">
+        <div class="bottom-menu column column-responsive-reverse">
+          <div class="close-btn">
+            <div class="text-right q-px-md">
+              <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
             </div>
           </div>
+          <div class="others">
+            <q-list bordered class="rounded-borders">
+              <q-expansion-item class="text-h5" expand-separator label="Others">
+                <q-list class="text-h6">
+                  <q-item clickable v-ripple href="/#/task" target="_brank">
+                    <q-item-section class="items-end" avatar>
+                      <q-icon name="open_in_new" />
+                    </q-item-section>
+                    <q-item-section>create anew</q-item-section>
+                  </q-item>
+                  <q-item clickable v-ripple href="/">
+                    <q-item-section class="items-end" avatar>
+                      <q-icon name="keyboard_return" />
+                    </q-item-section>
+                    <q-item-section>back to Top</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-expansion-item>
+            </q-list>
+          </div>
         </div>
-        <div v-else class="text-center">
-          <p class="text-h6 text-indigo-7"><span class="material-icons">search_off</span>No Archives…</p>
-        </div>
-        <div class="mobile-only">
-          <q-list bordered class="rounded-borders">
-            <q-expansion-item expand-separator icon="menu" label="other menu">
-              <q-card>
-                <q-card-section>aaaa</q-card-section>
-              </q-card>
-            </q-expansion-item>
-          </q-list>
-          <div class="text-right q-px-md">
-            <q-btn flat round icon="close" label="close" @click="rightDrawerOpen = !rightDrawerOpen" />
+        <div class="archive-list">
+          <p class="text-h5 q-pt-md q-pl-md">Archive List</p>
+          <div v-if="archiveList.length != 0">
+            <div class="archive-area bg-blue-grey">
+              <div v-for="item of archiveList" :key="item.cardId">
+                <ArchiveItem :archiveItem="item" @deleted-item="deletedUpdate"></ArchiveItem>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-center">
+            <p class="text-h6 text-indigo-7"><span class="material-icons">search_off</span>No Archives…</p>
           </div>
         </div>
       </div>
@@ -86,16 +80,20 @@
           <div v-for="section of getTaskList" :key="section.sectionId">
             <TaskColumn :section="section" :filter="filtered" @add-archive-list="addArchiveList"></TaskColumn>
           </div>
-          <div class="q-pa-sm w-300px" v-if="newSectionInput">
-            <q-card class="my-card bg-blue-grey-1 q-pa-md">
-              <q-input borderless class="new-section" v-model="newSection" placeholder="sectionName" />
-              <q-btn label="add" color="primary" @click="addSection" class="q-mt-sm" />
-            </q-card>
+          <div>
+            <div class="q-pa-sm w-300px" v-if="newSectionInput">
+              <q-card class="my-card bg-blue-grey-1 q-pa-md">
+                <q-input borderless class="new-section" v-model="newSection" placeholder="sectionName" />
+                <q-btn label="add" color="primary" @click="addSection" class="q-mt-sm" />
+              </q-card>
+            </div>
           </div>
-          <div class="q-pa-sm w-300px">
-            <q-card class="my-card bg-blue-grey-1">
-              <q-btn flat class="full-width" label="＋ add sectiion" @click="addSectionInput" />
-            </q-card>
+          <div>
+            <div class="q-pa-sm w-300px">
+              <q-card class="my-card bg-blue-grey-1">
+                <q-btn flat class="full-width" label="＋ add sectiion" @click="addSectionInput" />
+              </q-card>
+            </div>
           </div>
         </div>
       </div>
@@ -305,9 +303,13 @@
 </script>
 
 <style lang="scss" scoped>
-  .menu-justify {
-    @media screen and (max-width:1023px) {
-      justify-content: center;
+  @media screen and (max-width:1023px) {
+    .menu-justify {
+      justify-content: space-between;
+    }
+
+    .column-responsive-reverse {
+      flex-direction: column-reverse;
     }
   }
 
@@ -368,6 +370,10 @@
   .archive-area {
     max-height: calc(100vh - 280px);
     overflow: auto;
+
+    @media screen and (max-width:599px) {
+      max-height: calc(100vh - 160px);
+    }
   }
 
   .archive-area::-webkit-scrollbar {
