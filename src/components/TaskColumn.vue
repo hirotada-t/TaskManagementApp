@@ -155,7 +155,7 @@
 
   .h-full {
     @media screen and (min-width:1024px) {
-      max-height: calc(100vh - 260px);
+      max-height: calc(100vh - 270px);
     }
 
     margin-right: 5px;

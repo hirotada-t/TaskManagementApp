@@ -315,7 +315,7 @@
 
   .task-container {
     @media screen and (min-width:1024px) {
-      height: calc(100vh - 140px);
+      height: calc(100vh - 65px);
     }
 
     height: calc(100vh - 100px);
