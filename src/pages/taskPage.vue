@@ -105,11 +105,11 @@
 
     <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
       <q-tabs align="justify">
-        <q-tab dense flat round icon="keyboard_return" href="/" />
-        <q-tab dense flat round icon="save_alt" @click="saveData" />
-        <q-tab dense flat round :icon="scaleIcon" @click="scaleCardArea" />
-        <q-tab dense flat round :icon="rmvUncleared" @click="filtered = !filtered" />
-        <q-tab dense flat round icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
+        <q-route-tab dense icon="keyboard_return" to="/#" exact />
+        <q-tab dense icon="save_alt" @click="saveData" />
+        <q-tab dense :icon="scaleIcon" @click="scaleCardArea" />
+        <q-tab dense :icon="rmvUncleared" @click="filtered = !filtered" />
+        <q-tab dense icon="menu" @click="rightDrawerOpen = !rightDrawerOpen" />
       </q-tabs>
     </q-footer>
 
@@ -307,7 +307,7 @@
 <style lang="scss" scoped>
   .menu-justify {
     @media screen and (max-width:1023px) {
-      justify-content: space-between;
+      justify-content: center;
     }
   }
 
