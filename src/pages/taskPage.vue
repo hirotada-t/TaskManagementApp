@@ -7,7 +7,12 @@
         </div>
         <div class="col-3 task-list-title">
           <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
-            class="full-width" style="font-size: 25px;" />
+            class="full-width" style="font-size: 25px;">
+            <template v-slot:append>
+              <q-icon v-if="taskListTitle === ''" name="edit" />
+              <q-icon v-else name="clear" class="cursor-pointer" @click="taskListTitle = ''" />
+            </template>
+          </q-input>
         </div>
         <div class="col-2">
           <q-btn label="save" class="full-width bg-deep-orange-3" @click="saveData" size="15px" icon="save_alt" />
@@ -53,7 +58,7 @@
         <div v-if="archiveList.length != 0">
           <div class="archive-area bg-blue-grey">
             <div v-for="item of archiveList" :key="item.cardId">
-              <ArchiveItem :archiveItem="item"></ArchiveItem>
+              <ArchiveItem :archiveItem="item" @deleted-item="deletedUpdate"></ArchiveItem>
             </div>
           </div>
         </div>
@@ -165,7 +170,6 @@
         this.getTaskList.push({
           "sectionId": "s-" + date.toLocaleString(),
           "sectionName": this.newSection ? this.newSection : "No section title",
-          "sectionPosNum": this.getTaskList.length + 1,
           "archives": false,
           "cardList": []
         });
@@ -219,6 +223,16 @@
       addArchiveList(e) {
         this.archiveList.unshift(e);
       },
+      deletedUpdate(e) {
+        for (let i = 0; i < this.getTaskList.length; i++) {
+          for (let j = 0; j < this.getTaskList[i].cardList.length; j++) {
+            if (this.getTaskList[i].cardList[j].cardId === e) {
+              this.getTaskList[i].cardList[j].deleted = true;
+              console.log(this.getTaskList)
+            }
+          }
+        }
+      },
     },
 
     computed: {
@@ -259,8 +273,8 @@
             for (let j = 0; j < this.taskList[i].cardList.length; j++) {
               if (this.taskList[i].cardList[j].archives) {
                 this.archiveList.push({
+                  "cardId": this.taskList[i].cardList[j].cardId,
                   "cardName": this.taskList[i].cardList[j].cardName,
-                  // "cardPosNum": this.getSection.cardList.length + 1,
                   // "cardContent": "content",
                   // "createDate": date.toLocaleString(),
                   // "deadLine": "",
@@ -268,6 +282,7 @@
                   // "cardTags": [],
                   "priority": this.taskList[i].cardList[j].priority,
                   "checked": this.taskList[i].cardList[j].checked,
+                  "deleted": this.taskList[i].cardList[j].deleted,
                   // "cardComment": "comment",
                 });
               }
@@ -305,7 +320,7 @@
   }
 
   .w-300px {
-    min-width: 300px;
+    width: 300px;
   }
 
   .viewport {

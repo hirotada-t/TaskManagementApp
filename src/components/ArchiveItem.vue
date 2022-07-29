@@ -1,9 +1,10 @@
 <template>
-  <q-card class="gnavi my-card q-my-md q-mx-auto" :class="archiveItem.priority">
+  <q-card class="gnavi my-card q-my-md q-mx-auto" :class="archiveItem.priority" v-if="!deleted">
     <div class="cleared-border" :class="archiveItem.checked ? 'cleared' : ''">
       <div>
         <q-card-section class="row justify-between q-py-none q-px-sm card-name text-h6">
-          {{archiveItem.cardName}}<span class="material-icons">delete</span>
+          {{archiveItem.cardName}}
+          <q-btn flat icon="delete" @click="deleteAlert" />
         </q-card-section>
         <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
           <div class="col-3">
@@ -34,11 +35,24 @@
 
     data() {
       return {
-        getArchiveItem: this.archiveItem,
+        deleted: this.archiveItem.deleted,
       }
     },
 
     methods: {
+      deleteAlert() {
+        this.$q.dialog({
+          title: 'Alert',
+          message: 'Do you really want to delete it?',
+          cancel: {
+            push: true,
+            color: 'negative'
+          }
+        }).onOk(() => {
+          this.deleted = true;
+          this.$emit("deleted-item", this.archiveItem.cardId);
+        });
+      },
     },
 
     computed: {

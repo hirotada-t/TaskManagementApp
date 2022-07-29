@@ -1,24 +1,29 @@
 <template>
   <div class="q-pa-sm w-300px" v-if="!getSection.archives">
     <q-card class="my-card bg-blue-grey-1">
-      <q-card-section class="row justify-around section-name order-xs-first">
-        <q-input borderless bottom-slots autogrow v-model="getSection.sectionName" class="col-11 text-h6"
-          placeholder="sectionName">
-          <template v-slot:hint>{{countCards()}}</template>
-        </q-input>
-        <q-btn flat padding="xs" icon="more_vert" class="col-1">
-          <q-menu transition-show="scale" transition-hide="scale">
-            <q-list style="min-width: 100px">
-              <q-item clickable @click="archiveSection">
-                <q-item-section>archive section</q-item-section>
-              </q-item>
-              <q-separator />
-              <!-- <q-item clickable @click="sortPriority">
+      <q-card-section>
+        <div class="row order-xs-first">
+          <q-input autogrow v-model="getSection.sectionName" class="col-11 text-h6" placeholder="sectionName" >
+            <template v-slot:append>
+              <q-icon v-if="getSection.sectionName === ''" name="edit" />
+              <q-icon v-else name="clear" class="cursor-pointer" @click="getSection.sectionName = ''" />
+            </template>
+          </q-input>
+          <q-btn flat padding="xs" icon="more_vert" class="col-1">
+            <q-menu transition-show="scale" transition-hide="scale">
+              <q-list style="min-width: 100px">
+                <q-item clickable @click="archiveSection">
+                  <q-item-section>archive section</q-item-section>
+                </q-item>
+                <q-separator />
+                <!-- <q-item clickable @click="sortPriority">
                 <q-item-section>sort priority</q-item-section>
               </q-item> -->
-            </q-list>
-          </q-menu>
-        </q-btn>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
+        <div class="text-blue-grey-4" v-if="countCards()">{{countCards()}} tasks remain.</div>
       </q-card-section>
       <q-card-section class="h-full q-py-none">
         <div v-for="card of getSection.cardList" :key="card.cardId">
@@ -76,9 +81,8 @@
         this.newCardInput = !this.newCardInput;
         const date = new Date();
         this.getSection.cardList.push({
-          "cardId": "c-" + date.toLocaleString(),
+          "cardId": "c-" + date.toLocaleString() + date.getMilliseconds(),
           "cardName": this.newCard ? this.newCard : "No card title",
-          // "cardPosNum": this.getSection.cardList.length + 1,
           // "cardContent": "content",
           // "createDate": date.toLocaleString(),
           // "deadLine": "",
@@ -87,6 +91,7 @@
           "priority": "none",
           "checked": false,
           "archives": false,
+          "deleted": false,
           // "cardComment": "comment",
         });
         this.newCard = ""
@@ -106,7 +111,6 @@
             this.$emit("add-archive-list", {
               "cardId": this.getSection.cardList[i].cardId,
               "cardName": this.getSection.cardList[i].cardName,
-              // "cardPosNum": this.getSection.cardList.length + 1,
               // "cardContent": "content",
               // "createDate": date.toLocaleString(),
               // "deadLine": "",
@@ -114,6 +118,7 @@
               // "cardTags": [],
               "priority": this.getSection.cardList[i].priority,
               "checked": this.getSection.cardList[i].checked,
+              "deleted": false,
               // "cardComment": "comment",
             });
           }
@@ -129,7 +134,7 @@
             counter++;
           }
         }
-        if (counter >= 2) return counter + " tasks";
+        if (counter >= 2) return counter;
       },
       sortPriority() {
 
@@ -145,7 +150,7 @@
 
 <style lang="scss" scoped>
   .w-300px {
-    min-width: 300px;
+    width: 300px;
   }
 
   .h-full {

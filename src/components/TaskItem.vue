@@ -3,11 +3,16 @@
     <div class="cleared-border" :class="cleared">
       <div>
         <q-card-section class="q-py-none q-px-sm card-name">
-          <q-input borderless autogrow v-model="getCard.cardName" class="col-11 text-h6" placeholder="cardName" />
+          <q-input dense autogrow v-model="getCard.cardName" class="col-11 text-h6" placeholder="cardName">
+            <template v-slot:append>
+              <q-icon v-if="getCard.cardName === ''" name="edit" />
+              <q-icon v-else name="clear" class="cursor-pointer" @click="getCard.cardName = ''" />
+            </template>
+          </q-input>
           <!-- <span class="text-h6" @click="setDetails = true">{{getCard.cardName}}</span> -->
         </q-card-section>
-        <q-card-section class="row justify-start items-center q-py-none q-px-sm card-name">
-          <div class="col-2">
+        <q-card-section class="row justify-start q-py-none card-name">
+          <div class="">
             <q-checkbox v-model="getCard.checked" color="black" />
             <q-tooltip v-if="getCard.checked">
               Cleared!
@@ -16,13 +21,13 @@
               Not cleared
             </q-tooltip>
           </div>
-          <div class="col-3">
-            <q-btn flat @click="archiveCard" icon="archive" />
+          <div class="">
+            <q-btn round flat @click="archiveCard" icon="archive" />
             <q-tooltip>
               Archive
             </q-tooltip>
           </div>
-          <div class="col-6 q-py-sm">
+          <div class="col-7 q-py-sm">
             <q-select dense filled borderless v-model="getCard.priority" :options="options" label="priority" />
           </div>
         </q-card-section>
@@ -108,6 +113,7 @@
         }).onOk(() => {
           this.getCard.archives = true;
           this.$emit("add-archive", {
+            "cardId": this.getCard.cardId,
             "cardName": this.getCard.cardName,
             // "cardPosNum": this.getSection.cardList.length + 1,
             // "cardContent": "content",
@@ -117,9 +123,13 @@
             // "cardTags": [],
             "priority": this.getCard.priority,
             "checked": this.getCard.checked,
+            "deleted": false,
             // "cardComment": "comment",
           });
         });
+      },
+      deleteItem() {
+
       },
     },
 
