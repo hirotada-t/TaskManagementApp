@@ -14,8 +14,8 @@
         </q-card-section>
         <q-card-section>
           <q-btn label="start anew" icon="open_in_new" size="20px" color="primary" class="q-mt-md full-width"
-            href="/#/task" />
-          <q-btn label="use past data" icon="file_upload" size="20px" color="primary" class="q-mt-md full-width"
+            to="/task" />
+          <q-btn label="open json data" icon="file_upload" size="20px" color="primary" class="q-mt-md full-width"
             @click="btnclick" />
           <input type="file" class="hidden" ref="input" accept="application/json" @change="fileHandle">
         </q-card-section>

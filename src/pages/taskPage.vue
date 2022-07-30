@@ -3,7 +3,7 @@
     <q-header elevated class="bg-grey-7 desktop-only text-black">
       <q-toolbar class="q-py-sm q-gutter-md">
         <div class="col-1">
-          <q-btn icon="keyboard_return" class="full-width bg-grey-4" label="back" size="15px" href="/" />
+          <q-btn icon="keyboard_return" class="full-width bg-grey-4" label="back" size="15px" to="/" />
         </div>
         <div class="col-3 task-list-title">
           <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
@@ -41,17 +41,17 @@
             <q-list bordered class="rounded-borders">
               <q-expansion-item class="text-h5" expand-separator label="Others">
                 <q-list class="text-h6">
-                  <q-item clickable v-ripple href="/#/task" target="_brank">
-                    <q-item-section class="items-end" avatar>
-                      <q-icon name="open_in_new" />
-                    </q-item-section>
-                    <q-item-section>create anew</q-item-section>
-                  </q-item>
-                  <q-item clickable v-ripple href="/">
+                  <q-item clickable v-ripple to="/">
                     <q-item-section class="items-end" avatar>
                       <q-icon name="keyboard_return" />
                     </q-item-section>
                     <q-item-section>back to Top</q-item-section>
+                  </q-item>
+                  <q-item disable>
+                    <q-item-section class="items-end" avatar>
+                      <q-icon name="hourglass_top" />
+                    </q-item-section>
+                    <q-item-section>comming later...</q-item-section>
                   </q-item>
                 </q-list>
               </q-expansion-item>
@@ -167,7 +167,7 @@
         this.newSectionInput = !this.newSectionInput;
         this.getTaskList.push({
           "sectionId": "s-" + date.toLocaleString(),
-          "sectionName": this.newSection ? this.newSection : "No section title",
+          "sectionName": this.newSection ? this.newSection : "Section title",
           "archives": false,
           "cardList": []
         });

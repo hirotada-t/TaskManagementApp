@@ -82,7 +82,7 @@
         const date = new Date();
         this.getSection.cardList.push({
           "cardId": "c-" + date.toLocaleString() + date.getMilliseconds(),
-          "cardName": this.newCard ? this.newCard : "No card title",
+          "cardName": this.newCard ? this.newCard : "Card title",
           // "cardContent": "content",
           // "createDate": date.toLocaleString(),
           // "deadLine": "",
