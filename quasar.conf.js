@@ -10,7 +10,7 @@
 
 const ESLintPlugin = require('eslint-webpack-plugin')
 
-module.exports = function (/* ctx */) {
+module.exports = function (ctx) {
   return {
     outputDir: "docs",
     assetsDir: "./",
