@@ -96,9 +96,9 @@
             </div>
           </div>
         </div>
+        <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
+          class="full-width mobile-only" style="font-size: 20px;" />
       </div>
-      <q-input dense outlined bg-color="grey-2" v-model="taskListTitle" placeholder="taskListTitle"
-        class="full-width mobile-only" style="font-size: 20px;" />
     </div>
 
     <q-footer elevated class="bg-blue-grey-9 text-white mobile-only">
@@ -158,7 +158,7 @@
             }
           })
         });
-        if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
+        if (window.matchMedia('(min-device-width: 1024px)').matches) {
           this.updateScrollBooster();
         }
       },
@@ -252,7 +252,7 @@
       // Horizontal Image Slider
       const viewport = document.querySelector(".viewport");
       const content = document.querySelector(".content");
-      if (window.matchMedia && window.matchMedia('(min-device-width: 1024px)').matches) {
+      if (window.matchMedia('(min-device-width: 1024px)').matches) {
         this.scrollBooster = this.setScrollBooster(viewport, content);
       }
 
